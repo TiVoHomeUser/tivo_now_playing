@@ -17,7 +17,7 @@ Now Playing page:
 
 ![npl-details](https://github.com/jradwan/tivo_now_playing/blob/master/images/screenshot-npl.png)
 
-See it live [here](https://www.windracer.net/tivo/summary.htm).
+See it live [here](http://www.vicw.us/tnpl/summary.htm).
 
 - - -
 ## Setup
@@ -37,8 +37,9 @@ The program will create the HTML files in the local directory. Point your browse
 
 - - -
 ## Contact
+Victor Wheeler
+- https://github.com/TiVoHomeUser
 
 Jeremy C. Radwan
-
 - https://github.com/jradwan
 - http://www.windracer.net/blog
