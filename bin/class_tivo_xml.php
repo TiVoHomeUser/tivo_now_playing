@@ -92,7 +92,7 @@ class Tivo_XML {
 			$url = "\"https://$this->host/TiVoConnect?Command=QueryContainer&Container=%2FNowPlaying&Recurse=Yes&ItemCount=50\"";
 		} else $url = "\"https://$this->host/TiVoConnect?Command=QueryContainer&Container=%2FNowPlaying&Recurse=Yes&ItemCount=50&AnchorOffset=$itemcount\"";
 
-		$wgetnp = "$this->wget --http-user=tivo --http-passwd=$this->mak --output-document=" . $xml_path . "$this->dvr\"_nowplaying$more.xml\" $url";
+		$wgetnp = "$this->wget --http-user=tivo --http-password=$this->mak --output-document=" . $xml_path . "$this->dvr\"_nowplaying$more.xml\" $url";
 
 		if (file_exists($xml_path . $this->dvr . "_nowplaying" . $more . ".xml")) {
 			$timedif = @(time() - filemtime($xml_path . $this->dvr . "_nowplaying" . $more . ".xml"));

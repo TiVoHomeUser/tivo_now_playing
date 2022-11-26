@@ -1,174 +1,6 @@
 <?php
-/*
- * 20130915 VicW (HomeUser)
- *  removed un-used code and private data
- *  moved auto_size tracking files from "tmp" to "log"
- *
- * 2013,2013 updates VicW (HomeUser)
- *  Auto size adjustment for drives
- *  Archiving "now playing" lists
- *  Sorting of summary table
- *  Added field deleted to summary table (space not used by programs or suggestions)
- *  Combined now playing for all TiVos
- *  URL path allowing generation when HTML files are not published on local computer
- *  Other changes that I have forgot about.
- *  I added something to the program information like series ID.
- *
- * 20170429 jradwan (windracer)
- *  added 'back to Summary' link at top of page
- *  added 'expand/collapse all' label to plus icon at top of page
- *  moved box images to separate line, removed forced resizing
- *  added box images to ALL page listing and separators between box listings
- *  filtered out Rovi text in program descriptions
- *  general code cleanup
- *  minor text/label changes
- *
- * 20170503 jradwan (windracer)
- *  made archiving/logging a configurable option
- *
- * 20170505 jradwan (windracer)
- *  updates for new graphics
- *  removed old gfxicons option
- *  indent program details block (css)
- *  clean up totals block (css)
- *
- * 20170516 jradwan (windracer)
- *  add sortable table with episode/series info
- *  more graphical updates, css tweaks
- *
- * 20170523 VicW TiVoHomeUser (homeuser)
- *  Added Sortable tables grouped by seriesid by putting everything
- *  in an indexed array $folders adding additional rows every time the same seriesid
- *  is encountered.
- *
- * 20170527 VicW (TiVoHomeUser)
- *  Moved write for _track_drive_size.log inside the size check block.
- *  Now the log file is only written to when the computed storage size has changed.
- *
- * 20170528 VicW
- *  Link to folders from All Suggestions
- *  added tivo short name to message in Suggestions link
- *
- * 20170531 VicW
- *  Sortable tables grouped by seriesid for each DVR
- *  Added $LASTUPDATE for reference in summary header
- *  summary TiVo name now has (Grouped) link to Grouped Now Playing
- *
- * 20170602 VicW
- *  Added link to TiVoHomeUser's branch at github to the bottom of the summary page.
- *  06/-3  modified link's verbage
- *
- * 20170606 VicW
- *  Swapped Groups and TiVo name in summary header
- *
- * 20170608 VicW
- *  Changed Grouped to Groups
- *
- * 20170610 VicW
- *  changed link to github in summary to include the master branch
- *
- * 20170610 jradwan (windracer)
- *  format version line on summary page
- *  use folder icon for groups link
- *
- * 20170615 VicW  (TiVoHomeUser)
- *  Cleanup some Html syntax errors missing closing tags
- *  Fixed the corrupt table with missing DVR(s)
- *  Added wget timeouts to tivo_settings.php wgetpath
- *  Group displays off-line for the off-line DVR same as NowPlaying
- *  Total drive size in summary now excludes off-line DVRs in its calculations
- *
- * 20170618 Vicw
- *  Collapsible Groups working
- *
- * 20170619 VicW
- *  Added new old dates to collapsible headers
- *  TODO toggle All not working with sort tables
- *
- * 20170620 VicW
- *  Fixed some typos and removed obsolete commented out code
- *  Unset the new $group arrays for each tivo loop
- *  Removed the series count from folders/groups easily confused number of episodes
- *  fix for olddate uninitialized null would never test older initialized both old and new JIC
- *
- * 20170622 VicW
- *  Start of tool-tips using simple html (no formatting)
- *
- * 20170623 VicW
- *  Tool Tips for Groups
- *   Episode title	Episode Description
- *   Program ID		Series ID
- *   Record Date	Channel and Duration
- *   Title with		Series ID
- *   Status Icons	Status description
- *   TiVo			Title, Model, and Size
- *   removed SeriesID from table
- *   Check for empty SeriesID labeled table as "Movies and Specials" (Yellow Highlighted)
- *   Modified Folders to match Groups
- *   replaced folders $sort_footer with $allfooter to include totals
- *
- * 20170624 VicW
- * 	The re-used headers expand/collapse all starts toggling with id 0
- *  rather then modify the 2 headers $series_count++ was moved to end of loop
- *
- * 20170625 VicW
- *  Restored the tool-tip to display the TiVo's short name on title in ALL
- *  helps in long lists to know which DVR the program is from.
- *
- *  No more sharing of headers each page/group gets it's own.
- *  * SUM_HEADER		Main 		Summary page				$icnt not needed
- *  - HEADER			Each DVR	Now Playing,	Group
- *  * SORT_HEADER1		ALL			Folders						Has it's own count
- *  * SORT_HEADER					Sort						Not expandable should have it's own without expand all
- *  * ALLHEADER						Alldvrs						sequential starts at 0
- *
- *	* Can be defined before loop
- *
- * 20170626 VicW
- *  Cleanup of the majority of the HTML errors
- *  Addition of tool-tip episode summary to sort
- *  TODO add sort tool-tip for time
- *
- * 20170627 VicW
- *  I think all HTML errors are fixed
- *  last was missing closing tag in the write loop for groups
- *
- * 20170628 VicW
- *  added required alt text to <img= tag
- *
- * 20170707 VicW
- *  Tooltip Summary table for percent Used
- *
- * 20170708 VicW
- *  Fixed typo image to $image
- *  Summary table "ALL" Totals fixed to bottom row
- *
- * 20170714 VicW
- *   Off-line DVR displayed in Groups Movies instead of main page
- *   Added $offline boolean check when writing $groups
- *
- * 20170804 VicW (TiVoHomeUser)
- *   Changed tool tip for program ID in Group tables from Series ID to Episode Number
- *
- * 20170828 VicW
- *   Added to the tivo array a series ID index 'sidindex' basically it is just a copy of 'programid' except for Movies that get assigned 'MV'
- *   forcing movies to be grouped together allowing access to the original program and series id
- *
- * 20170903 VicW
- *   Tooltip for the DVR name in groups was displaying the drive size from the settings file not the adjusted size.
- *   Moved the read from the auto adjust drive size file to a function
- *    calling it before inserting the DVR's data in the HTML files
- *   
- *  TODO
- *  {text-align:center;}
- *  Problem with <H4> tag before table
- *  Date range for Movies and Uncategorized sometimes are not correct.
- *  Find out how kmttg gets the episode number most are missing here
- *
- *
- *
-*/
-$LASTUPDATE = "20170903";
+
+$LASTUPDATE = "20220917";
 
 ini_set("max_execution_time", "180");
 ini_set("error_log", "tivo_errors.txt");
@@ -185,6 +17,7 @@ $binpath = "bin" . delim;  // defined here to find the settings file
 require_once($binpath . "tivo_settings.php");
 require_once($binpath . "class_tivo_xml.php");
 
+date_default_timezone_set("America/Detroit");
 // Adjust the TiVo's drive size from tivo_settings.php with the one created in the auto size file if one exists.
 // Function currently is called twice first before creating the html pages then again for creating a new auto drive size file
 // function could be removed this probably needs to be called only the first time.
@@ -207,7 +40,7 @@ if(!file_exists($xml_path)) {
 
 // set up archiving-related variables and paths if enabled
 if($nplarchives == 1) {
-	//*TODO* set an optional limit of number of archives to make
+	// *TODO* set an optional limit of number of archives to make
 	// each month create a new archive folder.
 	$year = Date('Y');  // "2013";
 	$month = Date('M'); // "Feb";
@@ -230,7 +63,7 @@ if($nplarchives == 1) {
 	}
 
 	// $archdate is used to create a unique name for the archived nowplaying HTML file
-	$archdate = date(YmdHi); // 2012122015 YYYYMMDDHHMM timestamp appended to archived nowplaying
+	$archdate = date("YmdHi"); // 2012122015 YYYYMMDDHHMM timestamp appended to archived nowplaying
 }
 
 // PHP does not type and defaults to an empty char or null, so force a number 0 (zero)
@@ -746,7 +579,8 @@ foreach($tivos as $tivo) {
 	// adjust for drive size entered too small use total recorded size
 	// Update auto drive size if enabled (- value from file disables)
 	if($auto_size_gb >= 0){
-		if(toGB($totalsize) > $auto_size_gb) {
+		if(toGB(($totalsize-50)) > $auto_size_gb) {				// 50 gb overhead for boltP
+																//
 			$fpt = @fopen($auto_size_file_name, 'w+');
 			fwrite($fpt, "<?php\n\n");
 			fwrite($fpt, "\t// Drive size is adjusted when the total drive space used is greater\n");
@@ -760,8 +594,9 @@ foreach($tivos as $tivo) {
 			// log for tracking size totals
 			// log file to track drive size and computed drive size history
 			$fpt = @fopen("log". delim . $tivo['name'] . "_track_drive_size.log", 'a');
-			fwrite($fpt, "// " .date("F j, Y, g:i a") . "\t" . $tivo['size_gb'] . " GB\t" . toGB($totalsize) . " GB\n");
+			fwrite($fpt, "// " .date("F j, Y, g:i a") . "\tsize_gb= " . $tivo['size_gb'] . " GB\ttotalsize= " . toGB($totalsize) . " GB\n");
 			fwrite($fpt,"\$auto_size_gb = \"" . $tivo['size_gb'] . "\";\n" );
+			fwrite($fpt,"\nSize" . $totalsize . "\tFree " . $freespace . "\tSuggestions " . $totalsuggestions);
 			fclose($fpt);
 			// end of debug logging code
 		}
@@ -957,6 +792,7 @@ foreach($tivos as $tivo) {
 
 } // end of foreach tivo
 
+if ($all_size_gb == 0) $all_size_gb =1; // prevent divide by zero when no TiVos respond
 $allpercent_free .= floor((mBtoGB($allfreespace) /$all_size_gb)  * 1000)/10;;
 
 // add All Totals to a line on summary table
