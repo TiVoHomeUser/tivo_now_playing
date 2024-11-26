@@ -171,6 +171,8 @@
  * renamed $mymak and $mysubnet to $mymak1 and $mysubnet1 to allow for running with TiVo DVRs on more then one account.
  * 
  *   
- *
+ * 20241125 VicW
+ * Changed TiVo column name from name to short_title and added Tooltip for the name in sortable episode list (sort.htm)
+ * Added station, channel and length tooltip to Record Date column 
  *
 */

@@ -1,6 +1,6 @@
 <?php
 
-$LASTUPDATE = "20220917";
+$LASTUPDATE = "20241126";
 
 ini_set("max_execution_time", "180");
 ini_set("error_log", "tivo_errors.txt");
@@ -396,9 +396,12 @@ foreach($tivos as $tivo) {
 
  			// add a row to the sortable table (sortable episode list)
 			$sort_table .= "<tr>";
-			$sort_table .= "<td>" . $tivo ['name'] ."</td>";
-			//$sort_table .= "<td>" . $tivoarray [$i] ['title'] ."</td>";
-			$sort_table .= "<td> <span class=\"name\" title=\"" . $tivo['nowplaying'] . "\">" . $tivoarray[$i]['title'] . "</span></td>";
+			$sort_table .= "<td> <span class=\"name\" title=\"" . $tivo ['name'] . "\nModel: " . $tivo ['model'] . "\nSize: " . $tivo ['size_gb'] . " GB\">" . $tivo['shorttitle'] . "</span> </td>";
+
+			//<span title=\"" . $tivo ['name'] . "\nModel: " . $tivo ['model'] . "\nSize: " . $tivo ['size_gb'] . " GB\">"
+			$sort_table .= "<td> <span class=\"name\" title=\"" . $tivoarray[$i]['sourcestation'];
+			if($customicon[3] == "suggestion-recording") $sort_table .= " Suggestion ";
+			$sort_table .= "\">" . $tivoarray[$i]['title'] . "</span></td>";
 
 			$sort_table .= "<td> <span title=\"" . $tivoarray [$i] ['description'] . "\">";		// tooltip
 
@@ -411,8 +414,14 @@ foreach($tivos as $tivo) {
 
 			$sort_table .= "<td>" . $tivoarray [$i] ['programid'] ."</td>";
 			$sort_table .= "<td>" . $tivoarray [$i] ['seriesid'] ."</td>";
-			$sort_table .= "<td sorttable_customkey=\"" . tivoDate ( "YmdHi", $tivoarray [$i] ['capturedate'] ) .
-				"\">" .  tivoDate("g:i a - F j, Y", $tivoarray [$i] ['capturedate'] ) . "</td>";
+			// Tool Tip for Record Date in Groups
+			$sort_table .= "<td sorttable_customkey=\"" .
+				// record date index on sortable numeric value
+				tivoDate ( "YmdHi", $tivoarray [$i] ['capturedate'] ) . "\">" .			// Sort value
+				// record date viewable format
+				"<span title=\"Channel: " . $tivoarray[$i]['sourcestation'] . " (" . $sc[0] . ")" .
+				"\nDuration: " . mSecsToTime($tivoarray [$i] ['duration']) . "\">" .					// tooltip Channel and Duration
+				 tivoDate("g:i a - F j, Y", $tivoarray [$i] ['capturedate'] ) ."</span></td>\n";	// Date
 			$sort_table .= "</tr>\n";
 
 			// Collect info for the collapsible tables header
